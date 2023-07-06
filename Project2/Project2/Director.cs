@@ -6,6 +6,9 @@ namespace Project2
 	{
         private IBuilder builder;
 
+        public string? name { get; set; }
+        public string? content { get; set; }
+
 		public Director(IBuilder b)
 		{
             builder = b;
@@ -13,17 +16,22 @@ namespace Project2
 
         public void BuildBranch()
         {
-            builder.BuildBranch();
+            builder.BuildBranch(name!);
         }
 
         public void BuildLeaf()
         {
-            builder.BuildLeaf();
+            builder.BuildLeaf(name!, content!);
         }
 
         public void CloseBranch()
         {
             builder.CloseBranch();
+        }
+
+        public void Print()
+        {
+            Console.WriteLine(builder.GetDocument().Print(0));
         }
     }
 }
