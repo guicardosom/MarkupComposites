@@ -29,7 +29,7 @@ namespace Project2
             builder.CloseBranch();
         }
 
-        public void Print()
+        public void PrintDocument()
         {
             Console.WriteLine(builder.GetDocument().Print(0));
         }
