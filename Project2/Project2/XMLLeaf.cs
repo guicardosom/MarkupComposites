@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 
 namespace Project2
 {
@@ -19,14 +20,7 @@ namespace Project2
 
         public string Print(int depth)
         {
-            string xmlFormat = "";
-
-            for (int i = 0; i < depth; i++)
-                xmlFormat += "\t";
-
-            xmlFormat += $"<{tag}>{value}</{tag}>";
-
-            return xmlFormat;
+           return String.Format("{0," + depth * 4 + "}<{1,0}>{2,0}</{1,0}>", " ", tag, value);
         }
     }
 }
