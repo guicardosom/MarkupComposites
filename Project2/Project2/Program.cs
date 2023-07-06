@@ -4,16 +4,20 @@ namespace Project2
 {
     class Program
     {
-        private static Director director;
+        private static Director? director;
+        private static bool modeIsSet = false;
 
         static void Main(string[] args)
         {
             Console.WriteLine("Document Builder Console Client\n");
             DisplayCommands();
 
-            string input = Console.ReadLine() ?? "";
-            string[] commands = input.Split(':');
-            ExecuteCommands(commands);
+            while (true)
+            {
+                string input = Console.ReadLine() ?? "";
+                string[] commands = input.Split(':');
+                ExecuteCommands(commands);
+            }
         }
 
         private static void DisplayCommands()
@@ -30,37 +34,56 @@ namespace Project2
 
         private static void ExecuteCommands(string[] commands)
         {
-            switch (commands[0].ToLower())
+            string userCommand = commands[0].ToLower();
+
+            if (userCommand == "help")
             {
-                case "help":
-                    DisplayCommands();
-                    break;
+                DisplayCommands();
+            }
+            else if (userCommand == "mode")
+            {
+                if (commands[1].ToUpper() == "JSON")
+                    director = new Director(new JSONBuilder());
+                else if (commands[1].ToUpper() == "XML")
+                    director = new Director(new XMLBuilder());
 
-                case "mode":
-                    if (commands[1].ToUpper() == "JSON")
-                        director = new Director(new JSONBuilder());
-                    else if (commands[1].ToUpper() == "XML")
-                        director = new Director(new XMLBuilder());
-                    break;
+                modeIsSet = true;
+            }
+            else if (modeIsSet)
+            {
+                switch(userCommand)
+                {
+                    case "branch":
+                        director!.name = commands[1];
+                        director!.BuildBranch();
+                        break;
 
-                case "branch":
-                    director.BuildBranch();
-                    break;
+                    case "leaf":
+                        director!.name = commands[1];
+                        director!.content = commands[2];
+                        director!.BuildLeaf();
+                        break;
 
-                case "leaf":
-                    director.BuildLeaf();
-                    break;
+                    case "print":
+                        director!.PrintDocument();
+                        break;
 
-                case "close":
-                    director.CloseBranch();
-                    break;
+                    case "close":
+                        director!.CloseBranch();
+                        break;
 
-                case "print":
-                    break;
+                    case "exit":
+                        Environment.Exit(0);
+                        break;
 
-                case "exit":
-                    Environment.Exit(0);
-                    break;
+                    default:
+                        Console.WriteLine("Invalid input. For usage, type 'help'.");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error. Mode has not been set. For usage, type 'help'.");
             }
         }
     }
