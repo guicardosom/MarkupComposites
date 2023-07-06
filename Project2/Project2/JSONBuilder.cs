@@ -4,34 +4,34 @@ namespace Project2
 {
 	public class JSONBuilder : IBuilder
 	{
-        private JSONComposite root, last;
+        private JSONBranch root, current;
+        private Stack<JSONBranch> openBranches;
 
-		public JSONBuilder()
+        public JSONBuilder()
 		{
-            root = last = new JSONComposite("");
-		}
+            root = current = new JSONBranch("");
+            openBranches = new Stack<JSONBranch>();
+            openBranches.Push(current);
+        }
 
         public void BuildBranch(string name)
         {
-            JSONComposite branch = new JSONComposite(name);
-            root.AddChild(branch);
-            last = branch;
+            JSONBranch branch = new JSONBranch(name);
+            current.AddChild(branch);
+            current = branch;
+            openBranches.Push(current);
         }
 
         public void BuildLeaf(string name, string content)
         {
-            JSONLeaf leaf = new JSONLeaf(name, content);
-            last.AddChild(leaf);
+            current.AddChild(new JSONLeaf(name, content));
         }
 
         public void CloseBranch()
         {
-            var children = root.GetChildren();
-            for (int i = children.Count - 1; i == 0; i++)
-                if (children[i] is JSONComposite &&
-                    children[i] != last &&
-                    children[i] != root)
-                    last = (JSONComposite)children[i];
+            if (openBranches.Count() > 1)
+                openBranches.Pop();
+            current = openBranches.Peek();
         }
 
         public IComposite GetDocument()

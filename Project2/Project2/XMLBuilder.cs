@@ -4,34 +4,34 @@ namespace Project2
 {
 	public class XMLBuilder : IBuilder
 	{
-        private XMLComposite root, last;
+        private XMLBranch root, current;
+        private Stack<XMLBranch> openBranches;
 
         public XMLBuilder()
 		{
-            root = last = new XMLComposite("root");
+            root = current = new XMLBranch("root");
+            openBranches = new Stack<XMLBranch>();
+            openBranches.Push(current);
         }
 
         public void BuildBranch(string name)
         {
-            XMLComposite branch = new XMLComposite(name);
-            root.AddChild(branch);
-            last = branch;
+            XMLBranch branch = new XMLBranch(name);
+            current.AddChild(branch);
+            current = branch;
+            openBranches.Push(current);
         }
 
         public void BuildLeaf(string name, string content)
         {
-            XMLLeaf leaf = new XMLLeaf(name, content);
-            root.AddChild(leaf);
+            current.AddChild(new XMLLeaf(name, content));
         }
 
         public void CloseBranch()
         {
-            var children = root.GetChildren();
-            for (int i = children.Count - 1; i == 0; i++)
-                if (children[i] is XMLComposite &&
-                    children[i] != last &&
-                    children[i] != root)
-                    last = (XMLComposite)children[i];
+            if (openBranches.Count() > 1)
+                openBranches.Pop();
+            current = openBranches.Peek();
         }
 
         public IComposite GetDocument()
