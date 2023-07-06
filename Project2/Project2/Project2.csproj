@@ -7,4 +7,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="JSON\" />
+    <None Remove="XML\" />
+    <None Remove="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="JSON\" />
+    <Folder Include="XML\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
 </Project>
