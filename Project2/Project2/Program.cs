@@ -42,26 +42,43 @@ namespace Project2
             }
             else if (userCommand == "mode")
             {
-                if (commands[1].ToUpper() == "JSON")
-                    director = new Director(new JSONBuilder());
-                else if (commands[1].ToUpper() == "XML")
-                    director = new Director(new XMLBuilder());
+                if (commands.Length == 2)
+                {
+                    if (commands[1].ToUpper() == "JSON")
+                        director = new Director(new JSONBuilder());
+                    else if (commands[1].ToUpper() == "XML")
+                        director = new Director(new XMLBuilder());
 
-                modeIsSet = true;
+                    modeIsSet = true;
+                }
             }
             else if (modeIsSet)
             {
                 switch(userCommand)
                 {
                     case "branch":
-                        director!.name = commands[1];
-                        director!.BuildBranch();
+                        if (commands.Length == 2 && !string.IsNullOrEmpty(commands[1]))
+                        {
+                            director!.name = commands[1];
+                            director!.BuildBranch();
+                        }
+                        else
+                            Console.WriteLine("Invalid input. The branch needs a name. For usage, type 'help'.");
+
                         break;
 
                     case "leaf":
-                        director!.name = commands[1];
-                        director!.content = commands[2];
-                        director!.BuildLeaf();
+                        if (commands.Length == 3 &&
+                            !string.IsNullOrEmpty(commands[1]) &&
+                            !string.IsNullOrEmpty(commands[2]))
+                        {
+                            director!.name = commands[1];
+                            director!.content = commands[2];
+                            director!.BuildLeaf();
+                        }
+                        else
+                            Console.WriteLine("Invalid input. The leaf needs a name and content. For usage, type 'help'.");
+
                         break;
 
                     case "print":
